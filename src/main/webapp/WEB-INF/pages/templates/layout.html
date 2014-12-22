@@ -35,7 +35,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" ><a th:href="@{/user/profile}"><i class="glyphicon glyphicon-home"></i><span sec:authentication="name"></span> </a></li>
+                    <li class="active" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" ><a th:href="@{/user/profile}"><i class="glyphicon glyphicon-user"></i><span sec:authentication="name"></span> </a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -45,8 +45,8 @@
                             <li><a href="#">Find Projects</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Lists</li>
-                            <li><a href="#">Your Projects</a></li>
-                            <li><a href="#">Member Projects</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">My Own Projects</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">Member Projects</a></li>
                             <li><a href="#">All Projects</a></li>
                         </ul>
                     </li>
@@ -59,8 +59,8 @@
                             <li><a href="#">Find Observations</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Lists</li>
-                            <li><a href="#">Your Observations</a></li>
-                            <li><a href="#">Member Observations</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">My Own Observations</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">Member Observations</a></li>
                             <li><a href="#">All Observations</a></li>
                         </ul>
                     </li>
