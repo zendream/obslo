@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:dt="http://github.com/dandelion/datatables"
+        >
+
+<head th:include="templates/layout :: headerFragment">
+</head>
+
+<body>
+
+
+<div th:include="templates/layout :: menuFragment">
+</div>
+<div class="container">
+	<div class="panel panel-default">
+	  <div class="panel-heading">My Own Projects</div>
+	  <div class="panel-body">
+    	<table dt:table="true" dt:theme="bootstrap2"
+    			dt:ext="bootstrap2-responsive"
+        	   class="table table-striped table-condensed"
+	           id="projects">
+    	    <thead>
+    	    <th>
+           	#
+	        </th>
+        	<th>
+           	Name
+	        </th>
+	        <th>
+           	Created
+	        </th>
+	        <th>
+           	Modified
+	        </th>
+	        <th>
+           	Description
+	        </th>
+	        <th>
+           	Observations
+	        </th>
+	        <th>
+           	Users
+	        </th>
+    	    </thead>
+        	<tbody>
+	        <tr th:each="project : ${projectsList}">
+
+
+    	        <td> <a href="detail.html"
+        	            th:href="@{'/project/' + ${projectId}}"
+            	        th:text="${project.name}">1</a></td>
+        	</tr>
+	        </tbody>
+
+    	</table>
+    	<button type="button" class="btn btn-default btn-lg">
+  			<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span> New
+		</button>
+      </div>
+    </div>
+    <div class="panel panel-default">
+	  <div class="panel-heading">Projects I'm a member of</div>
+	  <div class="panel-body">
+    	<table dt:table="true" dt:theme="bootstrap2"
+    			dt:ext="bootstrap2-responsive"
+        	   class="table table-striped table-condensed"
+	           id="projects">
+    	    <thead>
+    	    <th>
+           	#
+	        </th>
+        	<th>
+           	Name
+	        </th>
+	        <th>
+           	Author
+	        </th>
+	        <th>
+           	Created
+	        </th>
+	        <th>
+           	Modified
+	        </th>
+	        <th>
+           	Description
+	        </th>
+	        <th>
+           	Observations
+	        </th>
+	        <th>
+           	Users
+	        </th>
+    	    </thead>
+        	<tbody>
+	        <tr th:each="project : ${projectsList}">
+
+
+    	        <td> <a href="detail.html"
+        	            th:href="@{'/project/' + ${projectId}}"
+            	        th:text="${project.name}">1</a></td>
+        	</tr>
+	        </tbody>
+
+    	</table>
+      </div>
+    </div>
+</div>
+<div th:include="templates/layout :: footerFragment">
+
+</div>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css"
+      href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    </link>
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8"
+        src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+
+</body>
+
+</html>

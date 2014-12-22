@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head th:fragment="headerFragment">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Observe!</title>
+    <link rel="stylesheet" href="../../../assets/css/main.css" th:href="@{/assets/css/main.css}"/>
+
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.css" th:href="@{/assets/css/bootstrap.css}"/>
+
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+
+</head>
+
+<body>
+<div th:fragment="menuFragment">
+    <div class="container">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" th:href="@{/}">Observation Logger</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" ><a th:href="@{/user/profile}"><i class="glyphicon glyphicon-home"></i><span sec:authentication="name"></span> </a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">New Project</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" class="divider"></li>
+                            <li class="dropdown-header">Search</li>
+                            <li><a href="#">Find Projects</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Lists</li>
+                            <li><a href="#">Your Projects</a></li>
+                            <li><a href="#">Member Projects</a></li>
+                            <li><a href="#">All Projects</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Observations <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">New Observation</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" class="divider"></li>
+                            <li class="dropdown-header">Search</li>
+                            <li><a href="#">Find Observations</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Lists</li>
+                            <li><a href="#">Your Observations</a></li>
+                            <li><a href="#">Member Observations</a></li>
+                            <li><a href="#">All Observations</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Users <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        	<li class="dropdown-header">Search</li>
+                            <li><a href="#">Find Users</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Leaderboard</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="col-sm-3 col-md-3 pull-right">
+        			<form class="navbar-form" role="search">
+        			<div class="input-group">
+            			<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term"></input>
+            			<div  class="input-group-btn">
+                			<button  class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+            			</div>
+        			</div>
+        			</form>
+        		</div>
+                <ul class="nav navbar-nav navbar-right">
+					<li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+						<a th:href="@{/logout}">Logout</a>
+					</li>
+                    <li th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                        <a th:href="@{/login}">Login</a>
+                    </li>
+                    <li th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                        <a th:href="@{/public/signup}">Signup</a>
+                    </li>
+
+
+                </ul>
+
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+
+
+</div>
+<!--/.nav-collapse -->
+
+
+<div th:fragment="footerFragment">
+
+
+    <script src="../../../assets/js/jquery.js" th:src="@{/assets/js/jquery.js}"></script>
+    <script src="../../../assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
+    <script src="../../../assets/js/jquery-ui-1.10.3.custom.min.js"
+            th:src="@{/assets/js/jquery-ui-1.10.3.custom.min.js}"></script>
+
+
+</div>
+</body>
+
+</html>

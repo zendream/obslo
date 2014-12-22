@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        >
+
+<head th:include="templates/layout :: headerFragment">
+</head>
+
+<body>
+
+
+
+<div th:include="templates/layout :: menuFragment">
+</div>
+
+<div class="jumbotron">
+<div class="container">
+    <form class="form-search">
+        <legend>List projects</legend>
+        <div class="input-append">
+            <input type="text" class="span2 search-query" id="project" placeholder="username ..."/>
+            <button type="submit" class="btn">Select</button>
+
+        </div>
+    </form>
+</div>
+</div>
+<div th:include="templates/layout :: footerFragment">
+
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(function() {
+
+        $("#project").autocomplete({
+            source: /*[[@{/user/get_projects_list}]]*/ '',
+            minLength: 2
+        })});
+
+
+    /*]]>*/
+</script>
+</body>
+
+</html>
