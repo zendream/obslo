@@ -158,35 +158,6 @@ public class UserController {
         return "view/user/profile";
     }
     
-    @RequestMapping(value = "/project/list")
-    public String projectList() {
-        return "view/project/list";
-    }
-    
-    @RequestMapping(value = "/user/searchProject")
-    public String searchProject() {
-        return "view/user/searchProject";
-    }
-    
-    
-    @RequestMapping(value = "/project/{projectId}/detail", method=RequestMethod.GET)
-    public String projectView(@PathVariable("projectId") int projectId) {
-    	ModelAndView mav = new ModelAndView("project/detail");
-        //mav.addObject();
-        return "view/user/profile";
-    }
-
-
-//TODO
-    @RequestMapping(value = "/user/get_projects_list",
-            method = RequestMethod.GET, produces = "application/json")
-    public
-    @ResponseBody
-    Object[] getProjectsList(@RequestParam("term") String query) {
-        List<String> usernameList = userRepository.findUsername(query);
-
-        return usernameList.toArray();
-    }
 
     @RequestMapping(value = "/pages/base/user/get",
             method = RequestMethod.GET)

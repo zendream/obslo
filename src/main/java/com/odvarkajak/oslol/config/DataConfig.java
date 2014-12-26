@@ -4,9 +4,11 @@ package com.odvarkajak.oslol.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -17,9 +19,8 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import org.apache.commons.dbcp.*; 
-//import com.mysql.jdbc.Driver;
+
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -28,12 +29,32 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @Configuration
 @Profile("default")
-public class DataConfig implements DisposableBean {
+@PropertySource("classpath:/application.properties")
+public class DataConfig /*implements DisposableBean*/ {
     static final Logger logger = LoggerFactory.getLogger(CommonConfig.class);
 
-    private EmbeddedDatabase ed;
 
-    /*@Bean(name="hsqlInMemory")
+    @Value("${db.driver}")
+    private String dbDriver;
+    @Value("${db.url}")
+    private String url;
+    @Value("${db.username}")
+    private String username;
+    @Value("${db.password}")
+    private String password;
+    @Value("${hibernate.dialect}")
+    private String dialect;
+    @Value("${hibernate.show_sql}")
+    private String showSql;
+    @Value("${entitymanager.packages.to.scan}")
+    private String packagesToScan;
+    
+    /*
+     * inmemorySettings
+    
+    private EmbeddedDatabase ed;
+        
+    @Bean(name="hsqlInMemory")
     public EmbeddedDatabase hsqlInMemory() {
         logger.debug("Enter: EmbeddedDatabase");
         if ( this.ed == null ) {
@@ -45,14 +66,14 @@ public class DataConfig implements DisposableBean {
 
     }*/
     //TODO
-    @Bean(name = "hsqlInMemory")
+    @Bean(name = "JPAMySQL")
     public DataSource hsqlInMemory() {
-    	logger.debug("Enter: JDBC MYSQL");
+    	logger.debug("Enter: JPA MYSQL");
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/usersdb");
-        dataSource.setUsername("root");
-        dataSource.setPassword("r4nd0mS0");
+        dataSource.setDriverClassName(dbDriver);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
      
         return dataSource;
     }
@@ -65,7 +86,7 @@ public class DataConfig implements DisposableBean {
                 = new LocalContainerEntityManagerFactoryBean();
 
         lcemfb.setDataSource(this.hsqlInMemory());
-        lcemfb.setPackagesToScan(new String[] {"com.odvarkajak.oslol.domain"});
+        lcemfb.setPackagesToScan(new String[] {packagesToScan});
 
         lcemfb.setPersistenceUnitName("MyPU");
 
@@ -73,14 +94,13 @@ public class DataConfig implements DisposableBean {
         lcemfb.setJpaVendorAdapter(va);
         va.setDatabase(Database.HSQL);
         va.setGenerateDdl(true);
-        va.setShowSql(true);
-        // va.setDatabasePlatform("org.hibernate.dialect.HSQLDialect");
-        va.setDatabasePlatform("org.hibernate.dialect.MySQL5InnoDBDialect");
+        va.setShowSql((showSql.equals("true") ? true : false));
+        
+        va.setDatabasePlatform(dialect);
 
         Properties ps = new Properties();
-        // ps.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
         
-        ps.put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
+        ps.put("hibernate.dialect", dialect);
         ps.put("hibernate.hbm2ddl.auto", "create");
         lcemfb.setJpaProperties(ps);
 
@@ -109,7 +129,7 @@ public class DataConfig implements DisposableBean {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
-    @Override
+  /*  @Override
     public void destroy() {
 
         if ( this.ed != null ) {
@@ -117,4 +137,5 @@ public class DataConfig implements DisposableBean {
         }
 
     }
+    */
 }
