@@ -114,11 +114,14 @@ public class UserRepositoryImpl implements UserRepository {
         //return true;
     }
 
+	/*
 	@Override
+	
 	public Role getUserRoles(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	*/
 
 	@Override
 	public Set<Project> loadUserOwnProjectsByName(String username) {

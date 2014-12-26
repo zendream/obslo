@@ -14,8 +14,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 
-@Entity(name = "observationuser")
-@Table(name = "observationuser")
+@Entity(name = "observation_user")
+@Table(name = "observation_user")
 @AssociationOverrides({
 		@AssociationOverride(name = "pk.observation", 
 			joinColumns = @JoinColumn(name = "observationId")),

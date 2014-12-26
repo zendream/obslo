@@ -39,7 +39,7 @@ public class Project {
 		this.name = name;
 	}
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER )
-    @JoinTable(name="projectauthor",
+    @JoinTable(name="project_author",
         joinColumns = @JoinColumn(name="observation_id"),
         inverseJoinColumns = @JoinColumn(name="person_id")
     )

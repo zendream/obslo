@@ -46,7 +46,7 @@ public class Observation {
 		this.name = name;
 	}
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER )
-    @JoinTable(name="observationauthor",
+    @JoinTable(name="observation_author",
         joinColumns = @JoinColumn(name="observationId"),
         inverseJoinColumns = @JoinColumn(name="userId")
     )

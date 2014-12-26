@@ -38,8 +38,10 @@ public interface UserRepository {
     @Transactional(readOnly = true)
     boolean isSecurityCodeValid(String email, String securityCode);
 
+    /*
     @Transactional(readOnly = true)
     Role getUserRoles(String username);
+    */
     
     @Transactional(readOnly = true)
     Set<Project> loadUserOwnProjectsByName(String username);
@@ -55,8 +57,7 @@ public interface UserRepository {
     
     @Transactional(readOnly = true)
     Integer loadUserIdByName(String username);
-    
-    
+       
     void update(User user);
 }
 

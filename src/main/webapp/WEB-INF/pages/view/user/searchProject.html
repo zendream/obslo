@@ -29,16 +29,16 @@
 </div>
 
 <script th:inline="javascript">
-    /*<![CDATA[*/
+    <![CDATA[
     $(function() {
 
         $("#project").autocomplete({
-            source: /*[[@{/user/get_projects_list}]]*/ '',
+            source: @{/user/get_projects_list} '',
             minLength: 2
         })});
 
 
-    /*]]>*/
+    ]]>
 </script>
 </body>
 

@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @Configuration
 @Profile("default")
-public class StandaloneDataConfig implements DisposableBean {
+public class DataConfig implements DisposableBean {
     static final Logger logger = LoggerFactory.getLogger(CommonConfig.class);
 
     private EmbeddedDatabase ed;
@@ -81,7 +81,7 @@ public class StandaloneDataConfig implements DisposableBean {
         // ps.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
         
         ps.put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
-        ps.put("hibernate.hbm2ddl.auto", "validate");
+        ps.put("hibernate.hbm2ddl.auto", "create");
         lcemfb.setJpaProperties(ps);
 
         lcemfb.afterPropertiesSet();

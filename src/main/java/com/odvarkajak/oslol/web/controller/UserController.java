@@ -177,7 +177,7 @@ public class UserController {
     }
 
 
-
+//TODO
     @RequestMapping(value = "/user/get_projects_list",
             method = RequestMethod.GET, produces = "application/json")
     public

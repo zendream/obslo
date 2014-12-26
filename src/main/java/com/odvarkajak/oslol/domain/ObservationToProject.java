@@ -13,8 +13,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 
-@Entity(name = "observationproject")
-@Table(name = "observationproject")
+@Entity(name = "observation_project")
+@Table(name = "observation_project")
 @AssociationOverrides({
 		@AssociationOverride(name = "pk.observation", 
 			joinColumns = @JoinColumn(name = "observationId")),
