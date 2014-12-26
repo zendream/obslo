@@ -40,7 +40,7 @@ public class ProjectController {
     
     @RequestMapping(value = "/project/detail/{projectId}", method=RequestMethod.GET)
     public ModelAndView projectView(@PathVariable("projectId") int projectId) {
-    	ModelAndView mav = new ModelAndView("project/detail");
+    	ModelAndView mav = new ModelAndView("view/project/detail");
         //mav.addObject();
         return mav;
     }

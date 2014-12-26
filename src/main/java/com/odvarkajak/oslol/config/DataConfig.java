@@ -101,7 +101,7 @@ public class DataConfig /*implements DisposableBean*/ {
         Properties ps = new Properties();
         
         ps.put("hibernate.dialect", dialect);
-        ps.put("hibernate.hbm2ddl.auto", "create");
+        ps.put("hibernate.hbm2ddl.auto", "validate");
         lcemfb.setJpaProperties(ps);
 
         lcemfb.afterPropertiesSet();
