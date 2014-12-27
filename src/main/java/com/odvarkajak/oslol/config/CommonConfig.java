@@ -14,6 +14,8 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import com.odvarkajak.oslol.bean.MailBean;
 import com.odvarkajak.oslol.service.MyUserDetailsService;
+import com.odvarkajak.oslol.service.ObservationService;
+import com.odvarkajak.oslol.service.ProjectService;
 
 @Configuration
 @PropertySource("classpath:${ENV:dev}/mail.properties")
@@ -68,10 +70,20 @@ public class CommonConfig {
     }
 
     @Bean
+    ProjectService projectService() {
+        return new ProjectService();
+    }
+    
+    @Bean
+    ObservationService observationService() {
+        return new ObservationService();
+    }
+    
+    @Bean
     MyUserDetailsService myUserDetailsService() {
         return new MyUserDetailsService();
     }
-
+    
     @Bean
     MailBean mailBean() {
         MailBean mailBean = new MailBean();

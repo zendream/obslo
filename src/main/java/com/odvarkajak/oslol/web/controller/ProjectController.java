@@ -20,9 +20,8 @@ import com.odvarkajak.oslol.repository.UserRepository;
 public class ProjectController {
     static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    /*@Autowired
-    ProjectRepository projectRepository;
-    */
+    @Autowired
+    ProjectRepository projectRepository;    
     
     @Autowired
     UserRepository userRepository;

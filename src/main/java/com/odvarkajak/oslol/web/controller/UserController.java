@@ -60,8 +60,10 @@ public class UserController {
 
     @Autowired
     UserDetailsService myUserDetailsService;
+    
     @Autowired
     private UserSessionComponent userSessionComponent;
+    
     @Autowired
     private ReCaptchaImpl reCaptcha;
 

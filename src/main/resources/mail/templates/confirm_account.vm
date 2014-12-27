@@ -3,8 +3,8 @@
 <h3>Hi ${user.email}, welcome to ${websiteName}!</h3>
 
 <div>
-    To activate your account click the following link:
-    <a href="http://${host}/obslo/public/activation?mail=${user.email}&code=${securityCode.code}">MyOwnVenture activation</a>.
+    An account was registered to this email on our website, please use the following link to active your account:
+    <a href="http://${host}/obslo/public/activation?mail=${user.email}&code=${securityCode.code}">Activate</a>.
 </div>
 </body>
 

@@ -4,9 +4,6 @@ package com.odvarkajak.oslol.repository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.odvarkajak.oslol.domain.Observation;
-import com.odvarkajak.oslol.domain.Project;
-import com.odvarkajak.oslol.domain.Role;
 import com.odvarkajak.oslol.domain.User;
 
 import javax.persistence.EntityManager;
@@ -23,7 +20,8 @@ public class UserRepositoryImpl implements UserRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public Collection loadUsers() {
         Query query = em.createQuery("from user");
         return query.getResultList();
@@ -92,12 +90,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     @Transactional(readOnly = false)
     public List<String> findUsername(String username) {
         Query query = em.createQuery("select u.username from user u where username like :username")
                 .setParameter("username",  "%" + username + "%")
-                .setMaxResults(5);
+                .setMaxResults(10);
         return query.getResultList();
 
     }
@@ -111,49 +110,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .setParameter("code", securityCode);
         Long count = (Long) query.getSingleResult();
         return count == 1;
-        //return true;
     }
-
-	/*
-	@Override
-	
-	public Role getUserRoles(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	*/
-
-	@Override
-	public Set<Project> loadUserOwnProjectsByName(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<Observation> loadUserOwnObservationByName(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<Project> loadUserAllowedProjectsByName(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<Observation> loadUserAllowedObservationsByName(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer loadUserIdByName(String username) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-
 }
 
 
