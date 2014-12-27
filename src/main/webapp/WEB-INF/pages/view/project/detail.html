@@ -11,24 +11,18 @@
 
 <div th:include="templates/layout :: menuFragment">
 </div>
-<div class="container">
-    <div th:text="${project.name}">name</div>
+ <div class="container">
+    <div th:text="${project.getName()}">name</div>
 
     <div>Current phase
-      <a th:href="@{/impl/phase/create}">
-      KOKOOOOOOOOOOOOOT
-          <i class="icon-plus"/>
-      </a>
-        <a th:href="@{/phase/change}">
-            <i class="icon-list"/>
-        </a>
     </div>
     <div>
-        <div th:text="${phase?.name}">phase</div>
+        <div th:text="${project.description}">phase</div>
     </div>
 
 
 </div>
+
 <div th:include="templates/layout :: footerFragment">
 
 </div>

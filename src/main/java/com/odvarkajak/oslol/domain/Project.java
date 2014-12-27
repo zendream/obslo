@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.sql.Blob;
 import java.util.Date;
 
-@Entity
+@Entity(name = "project")
 @Table(name = "project")
 public class Project {
 
@@ -40,8 +40,8 @@ public class Project {
 	}
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER )
     @JoinTable(name="project_author",
-        joinColumns = @JoinColumn(name="observation_id"),
-        inverseJoinColumns = @JoinColumn(name="person_id")
+        joinColumns = @JoinColumn(name="project"),
+        inverseJoinColumns = @JoinColumn(name="person")
     )
 	public User getAuthor() {
 		return author;

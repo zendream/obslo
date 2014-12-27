@@ -47,7 +47,7 @@
                             <li class="dropdown-header">Lists</li>
                             <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">My Own Projects</a></li>
                             <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">Member Projects</a></li>
-                            <li><a href="#">All Projects</a></li>
+                            <li><a th:href="@{/project/listAll}">All Projects</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -61,7 +61,7 @@
                             <li class="dropdown-header">Lists</li>
                             <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">My Own Observations</a></li>
                             <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">Member Observations</a></li>
-                            <li><a href="#">All Observations</a></li>
+                            <li><a th:href="@{/observation/listAll}">All Observations</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -88,13 +88,13 @@
         		</ul>
                 <ul class="nav navbar-nav navbar-right">
 					<li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
-						<a th:href="@{/logout}">Logout</a>
+						<a th:href="@{/logout}">Logout&nbsp;</a>
 					</li>
                     <li th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}">
                         <a th:href="@{/login}">Login</a>
                     </li>
                     <li th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}">
-                        <a th:href="@{/public/signup}">Signup</a>
+                        <a th:href="@{/public/signup}">Signup&nbsp;</a>
                     </li>
 
 

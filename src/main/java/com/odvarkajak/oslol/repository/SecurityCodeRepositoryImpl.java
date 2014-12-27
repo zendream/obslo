@@ -20,7 +20,7 @@ public class SecurityCodeRepositoryImpl implements SecurityCodeRepository {
 
     @Override
     public void deleteSecurityCode(SecurityCode securityCode) {
-        entityManager.remove(securityCode);
+    	entityManager.remove(entityManager.contains(securityCode) ? securityCode : entityManager.merge(securityCode));
 
     }
 }

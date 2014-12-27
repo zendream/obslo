@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:dt="http://github.com/dandelion/datatables"
+        >
+
+<head th:include="templates/layout :: headerFragment">
+</head>
+
+<body>
+
+
+<div th:include="templates/layout :: menuFragment">
+</div>
+<div class="container">
+	<div class="panel panel-default">
+	  <div class="panel-heading">All Observations</div>
+	  <div class="panel-body">
+    	<table dt:table="true" dt:theme="bootstrap2"
+    			dt:ext="bootstrap2-responsive"
+    			dt:paginationType="bootstrap"
+        	   class="table table-striped table-condensed dataTable"
+	           id="observations">
+    	    <thead th:unless="${#lists.isEmpty(allObservations)}">
+    	    <tr>
+        		<th>
+           			Name
+	        	</th>
+	        	<th>
+	        		Author
+	        	</th>
+	        	<th>
+           			Created
+	        	</th>
+	        	<th>
+           			Last Changed
+	        	</th>
+	        	<th>
+           			Target
+	        	</th>
+	        	<th>
+           			Description
+	        	</th>
+	        	<th>
+           			# of Projects
+	        	</th>
+	        	</tr>
+    	    	</thead>
+        	<tbody th:unless="${#lists.isEmpty(allObservations)}" >
+	        <tr th:each="observation : ${allObservations}" th:href="@{'/observation/' + ${observation.id}}">
+				
+    	        <td> <a href="detail.html"
+        	            th:href="@{'/observation/detail/' + ${observation.id}}"
+            	        th:text="${observation.name}">ObservationName</a>
+            	</td>
+            	<td th:text="${observation.author.getUsername()}">Author</td>
+            	<td th:text="${observation.created}">CreatedDate</td>
+            	<td th:text="${observation.modified}">ModifiedDate</td>
+            	<td th:text="${observation.target}">Target</td>
+            	<td th:text="${observation.description}">ObservationDescription</td>                        	
+            	<td th:text="${observation.getObservationProjects().size()}">1</td>
+        	</tr>
+	        </tbody>
+
+     	</table>
+    	<div>
+    		<button class="btn btn-default btn-lg" type="submit">
+  				<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span> New
+			</button>
+		</div>>
+      </div>
+    </div>    
+</div>
+<div th:include="templates/layout :: footerFragment">
+
+</div>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"></link>
+
+  
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
+
+</body>
+
+</html>

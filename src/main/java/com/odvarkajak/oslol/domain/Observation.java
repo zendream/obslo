@@ -47,8 +47,8 @@ public class Observation {
 	}
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER )
     @JoinTable(name="observation_author",
-        joinColumns = @JoinColumn(name="observationId"),
-        inverseJoinColumns = @JoinColumn(name="userId")
+        joinColumns = @JoinColumn(name="observation"),
+        inverseJoinColumns = @JoinColumn(name="user")
     )
 	public User getAuthor() {
 		return author;

@@ -8,6 +8,7 @@ import com.odvarkajak.oslol.domain.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    @PersistenceContext
+	@PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager em;
 
     @SuppressWarnings("rawtypes")

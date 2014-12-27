@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.odvarkajak.oslol.domain.Project;
 import com.odvarkajak.oslol.repository.ProjectRepository;
 import com.odvarkajak.oslol.repository.UserRepository;
 
@@ -26,7 +28,13 @@ public class ProjectController {
     @Autowired
     UserRepository userRepository;
     
-    @RequestMapping(value = "/project/list")
+    @SuppressWarnings("unchecked")
+	@ModelAttribute("allProjects")
+    public List<Project> populateProjects() {
+        return (List<Project>) this.projectRepository.loadProjects();
+    }
+    
+    @RequestMapping(value = "/project/listAll")
     public String projectList() {
         return "view/project/list";
     }
@@ -38,9 +46,10 @@ public class ProjectController {
     
     
     @RequestMapping(value = "/project/detail/{projectId}", method=RequestMethod.GET)
-    public ModelAndView projectView(@PathVariable("projectId") int projectId) {
+    public ModelAndView projectView(@PathVariable("projectId") Long projectId) {
     	ModelAndView mav = new ModelAndView("view/project/detail");
-        //mav.addObject();
+    	Project project = projectRepository.findProjectById(projectId);
+        mav.addObject("project", project);
         return mav;
     }
 

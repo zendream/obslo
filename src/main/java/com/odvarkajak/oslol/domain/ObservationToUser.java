@@ -18,9 +18,9 @@ import javax.persistence.Transient;
 @Table(name = "observation_user")
 @AssociationOverrides({
 		@AssociationOverride(name = "pk.observation", 
-			joinColumns = @JoinColumn(name = "observationId")),
+			joinColumns = @JoinColumn(name = "observation")),
 		@AssociationOverride(name = "pk.user", 
-			joinColumns = @JoinColumn(name = "userId")) })
+			joinColumns = @JoinColumn(name = "user")) })
 public class ObservationToUser implements java.io.Serializable {
 
 

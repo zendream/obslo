@@ -183,8 +183,8 @@ public class User{
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "user_project", joinColumns = { 
-			@JoinColumn(name = "userId", nullable = false, updatable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "projectId", 
+			@JoinColumn(name = "user", nullable = false, updatable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "project", 
 					nullable = false, updatable = false) })
 	public Set<Project> getProjects() {
 		return projects;

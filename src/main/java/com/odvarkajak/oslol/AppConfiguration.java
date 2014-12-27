@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.odvarkajak.oslol.config.DispatcherConfig;
+import com.odvarkajak.oslol.config.ThymeleafConfig;
 
 
 @Configuration
@@ -16,7 +17,7 @@ import com.odvarkajak.oslol.config.DispatcherConfig;
 @EnableWebSecurity
 //@EnableWebMvcSecurity
 @ComponentScan(basePackages = "com.odvarkajak.oslol")
-@Import({ WebInitializer.class, DispatcherConfig.class})
+@Import({ WebInitializer.class, DispatcherConfig.class, ThymeleafConfig.class})
 public class AppConfiguration {
 
 }
