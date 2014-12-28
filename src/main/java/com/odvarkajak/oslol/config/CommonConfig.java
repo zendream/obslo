@@ -11,6 +11,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
+import org.springframework.web.multipart.MultipartResolver;
 
 import com.odvarkajak.oslol.bean.MailBean;
 import com.odvarkajak.oslol.service.MyUserDetailsService;
@@ -60,6 +61,13 @@ public class CommonConfig {
 
         logger.debug("Exit: javaMailSender");
         return javaMailSender;
+    }
+    
+    @Bean
+    public MultipartResolver multipartResolver() {
+        org.springframework.web.multipart.commons.CommonsMultipartResolver multipartResolver = new org.springframework.web.multipart.commons.CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(1000000);
+        return multipartResolver;
     }
 
     @Bean

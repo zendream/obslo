@@ -78,7 +78,7 @@ public class UserController {
 
     @RequestMapping("/public/signup")
     public String create(Model model) {
-        logger.debug("Enter: create");
+        logger.debug("Now: Create user");
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new UserForm());
         }
@@ -94,7 +94,7 @@ public class UserController {
     @Transactional
     public String createUser(Model model, @ModelAttribute("user") @Valid UserForm form, BindingResult result, @RequestParam(value = "recaptcha_challenge_field", required = false) String challangeField,
                              @RequestParam(value = "recaptcha_response_field", required = false) String responseField, ServletRequest servletRequest) {
-        logger.debug("Enter: createUser omg");
+        logger.debug("Now: createUser form");
         if (reCaptcha != null) {
             String remoteAdress = servletRequest.getRemoteAddr();
             ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAdress, challangeField, responseField);
@@ -151,7 +151,7 @@ public class UserController {
             return "view/public/signup";
 
         }
-        logger.debug("Exit: createUser");
+        logger.debug("End: createUser");
         return "view/public/mailSent";
     }
 
@@ -178,7 +178,7 @@ public class UserController {
     @RequestMapping(value = "/public/activation", method = RequestMethod.GET)
     @Transactional
     public String activation(@RequestParam String mail, @RequestParam String code) {
-        logger.debug("Enter: activation");
+        logger.debug("Now: user activation");
         if (userRepository.isSecurityCodeValid(mail, code)) {
             User user = userRepository.findUserByEmail(mail);
             user.setAccountLocked(false);
@@ -190,10 +190,10 @@ public class UserController {
             Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, user.getPassword(), AUTHORITIES);
             SecurityContextHolder.getContext().setAuthentication(auth);
             userSessionComponent.setCurrentUser(user);
-            logger.debug("Exit: activation");
+            logger.debug("End: activation fine");
             return "view/user/profile";
         }
-        logger.debug("Exit: activation");
+        logger.debug("Exit: activation fail");
         return "view/error/error";
 
     }
