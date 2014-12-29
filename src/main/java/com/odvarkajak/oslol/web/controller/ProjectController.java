@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -29,7 +31,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.odvarkajak.oslol.domain.Project;
 import com.odvarkajak.oslol.domain.Role;
 import com.odvarkajak.oslol.domain.SecurityCode;
-import com.odvarkajak.oslol.domain.User;
 import com.odvarkajak.oslol.repository.ProjectRepository;
 import com.odvarkajak.oslol.repository.UserRepository;
 import com.odvarkajak.oslol.utility.SecureUtility;
@@ -79,64 +80,36 @@ public class ProjectController {
         if (!model.containsAttribute("project")) {
             model.addAttribute("project", new ProjectForm());
         }        
-        return "view/public/signup";
+        return "view/project/create";
     }
 
 
     @RequestMapping(value = "/project/create_confirm", method = RequestMethod.POST)
     @Transactional
-    public String createUser(Model model, @ModelAttribute("user") @Valid UserForm form, BindingResult result, @RequestParam(value = "recaptcha_challenge_field", required = false) String challangeField,
-                             @RequestParam(value = "recaptcha_response_field", required = false) String responseField, ServletRequest servletRequest) {
-        logger.debug("Now: createUser form");
-        if (!result.hasErrors()) {
-
-            if (userRepository.isUsernameAlreadyExists(form.getUsername())) {
-                FieldError fieldError = new FieldError("screen_name", "username", "username already exists");
-                result.addError(fieldError);
-                return "view/public/signup";
-            }
-            // check if email already exists
-            if (userRepository.isEmailAlreadyExists(form.getEmail())) {
-                FieldError fieldError = new FieldError("user", "email", "email already exists");
-                result.addError(fieldError);
-                return "view/public/signup";
-            }
+    public String createProject(Model model, @ModelAttribute("project") @Valid ProjectForm form, BindingResult result, ServletRequest servletRequest) {
+        logger.debug("Now: createProject form");
+        User loggedUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        if (!result.hasErrors()) {        	
             Calendar cal = Calendar.getInstance();
             Date date = cal.getTime();
             
-            User user = new User();
-            Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-            user.setUsername(form.getUsername());
-            user.setEmail(form.getEmail());
-            user.setCreated(date);
-
-            user.setPassword(encoder.encodePassword(form.getPassword(), user.getEmail()));
-            Role role = new Role();
-            role.setUser(user);
-            role.setRole(2);
-
-            SecurityCode securityCode = new SecurityCode();
-            securityCode.setUser(user);
-            securityCode.setTimeRequest(new Date());
-            securityCode.setTypeActivationEnum(TypeActivationEnum.NEW_ACCOUNT);
-            securityCode.setCode(SecureUtility.generateRandomCode());
-            user.setRole(role);
-            user.setSecurityCode(securityCode);
-            user.setAccountLocked(true);
-            user.setEnabled(false);
-            logger.debug((user.isEnabled() ? ("user locked") : ("user unlocked")));
-            userRepository.saveUser(user);
-            //securityCodeRepository.persist(securityCode);
-
-
+            Project project = new Project();
+            project.setName(form.getName());
+            project.setDescription(form.getDescription());
+            project.setCreated(date);
+            project.setModified(date);
+            project.setAuthor(userRepository.findUserByUsername(loggedUser.getUsername()));
+            projectRepository.saveProject(project);
+            logger.debug("End: createProject form success");
+            logger.debug("End: createProject success");        
+            return ("redirect:listAll/") ;
         } else {
-            logger.debug("signup error");
+            logger.debug(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
             this.create(model);
-            return "view/public/signup";
+            return "view/project/create";
 
         }
-        logger.debug("End: createUser");
-        return "view/public/mailSent";
     }
     
 //TODO

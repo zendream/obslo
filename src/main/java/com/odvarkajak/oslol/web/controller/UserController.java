@@ -21,7 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.odvarkajak.oslol.component.UserSessionComponent;
 import com.odvarkajak.oslol.domain.Role;
@@ -39,10 +38,9 @@ import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 
 import java.util.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 
+@SuppressWarnings("deprecation")
 @Controller
 public class UserController {
 
@@ -67,7 +65,12 @@ public class UserController {
     @Autowired
     private ReCaptchaImpl reCaptcha;
 
-    private static List<GrantedAuthority> AUTHORITIES = new ArrayList<GrantedAuthority>(1) {{
+    private static List<GrantedAuthority> AUTHORITIES = new ArrayList<GrantedAuthority>(1) {/**
+		 * 
+		 */
+		private static final long serialVersionUID = -118506563309127796L;
+
+	{
         add(new GrantedAuthorityImpl("ROLE_USER"));
     }};
 
@@ -179,8 +182,8 @@ public class UserController {
     @Transactional
     public String activation(@RequestParam String mail, @RequestParam String code) {
         logger.debug("Now: user activation");
-        if (userRepository.isSecurityCodeValid(mail, code)) {
-            User user = userRepository.findUserByEmail(mail);
+        if ((!code.equals("l")) && (userRepository.isSecurityCodeValid(mail, code))) {
+            User user = userRepository.findUserByUsername(mail);
             user.setAccountLocked(false);
             user.setEnabled(true);
             securityCodeRepository.deleteSecurityCode(user.getSecurityCode());
@@ -190,6 +193,7 @@ public class UserController {
             Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, user.getPassword(), AUTHORITIES);
             SecurityContextHolder.getContext().setAuthentication(auth);
             userSessionComponent.setCurrentUser(user);
+            userRepository.saveUser(user);
             logger.debug("End: activation fine");
             return "view/user/profile";
         }

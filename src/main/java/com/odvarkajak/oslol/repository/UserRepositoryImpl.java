@@ -79,9 +79,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public User findUserByEmail(String email) {
-        return (User) em.createQuery("select u from user u where email = :email")
-                .setParameter("email", email).getSingleResult();
+    public User findUserByScreenname(String screen_name) {
+        return (User) em.createQuery("select u from user u where screen_name = :screen_name")
+                .setParameter("screen_name", screen_name).getSingleResult();
 
     }
 

@@ -19,11 +19,12 @@ public class Observation {
     private Date created;
     private Date modified;
     private String description;
-    private String picturefile;
-    private Blob picture;
-    private String contentfile;
-    private Blob content;
-    private String contentType;
+    private String pictureName;
+    private String pictureDescription;
+    private String graphName;
+    private String graphDescription;
+    private Set<DataFile> files;
+    
     private Set<ObservationToProject> observationProjects = new HashSet<ObservationToProject>(0);
     private Set<ObservationToUser> observationUsers = new HashSet<ObservationToUser>(0);
     private ObservationTargetEnum target;
@@ -56,7 +57,7 @@ public class Observation {
 	public void setAuthor(User author) {
 		this.author = author;
 	}
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created", unique = false, nullable = false)
 	public Date getCreated() {
 		return created;
@@ -64,7 +65,7 @@ public class Observation {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modified", unique = false, nullable = false)
 	public Date getModified() {
 		return modified;
@@ -79,45 +80,8 @@ public class Observation {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	@Column(name = "picturefile", unique = false, nullable = true)
-	public String getPicturefile() {
-		return picturefile;
-	}
-	public void setPicturefile(String picturefile) {
-		this.picturefile = picturefile;
-	}
-	@Column(name = "picture", unique = false, nullable = true)
-	@Lob
-	public Blob getPicture() {
-		return picture;
-	}
-	public void setPicture(Blob picture) {
-		this.picture = picture;
-	}
-	@Column(name = "contentfile", unique = false, nullable = false)
-	public String getContentfile() {
-		return contentfile;
-	}
-	public void setContentfile(String contentfile) {
-		this.contentfile = contentfile;
-	}
-	@Column(name = "content", unique = false, nullable = false)
-	@Lob
-	public Blob getContent() {
-		return content;
-	}
-	public void setContent(Blob content) {
-		this.content = content;
-	}
-	@Column(name = "contenttype", unique = false, nullable = false)
-	public String getContentType() {
-		return contentType;
-	}
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
 	
-	@Column(name = "target", unique = false, nullable = false)
+	@Column(name = "target", unique = false, nullable = true)
 	public ObservationTargetEnum getTarget() {
 		return target;
 	}
@@ -137,5 +101,40 @@ public class Observation {
 	}
 	public void setObservationUsers(Set<ObservationToUser> observationUsers) {
 		this.observationUsers = observationUsers;
+	}
+	@Column(name = "pictureFile", unique = false, nullable = true)
+	public String getPictureName() {
+		return pictureName;
+	}
+	public void setPictureName(String pictureName) {
+		this.pictureName = pictureName;
+	}
+	@Column(name = "pictureDescription", unique = false, nullable = true)
+	public String getPictureDescription() {
+		return pictureDescription;
+	}
+	public void setPictureDescription(String pictureDescription) {
+		this.pictureDescription = pictureDescription;
+	}
+	@Column(name = "graphFile", unique = false, nullable = true)
+	public String getGraphName() {
+		return graphName;
+	}
+	public void setGraphName(String graphName) {
+		this.graphName = graphName;
+	}
+	@Column(name = "graphDescription", unique = false, nullable = true)
+	public String getGraphDescription() {
+		return graphDescription;
+	}
+	public void setGraphDescription(String graphDescription) {
+		this.graphDescription = graphDescription;
+	}
+	@OneToMany(mappedBy = "parentObservation")
+	public Set<DataFile> getFiles() {
+		return files;
+	}
+	public void setFiles(Set<DataFile> files) {
+		this.files = files;
 	}
 }

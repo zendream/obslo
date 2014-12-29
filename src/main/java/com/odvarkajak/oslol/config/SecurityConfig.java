@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/users**", "/sessions/**").hasRole("ADMIN") //
                 // everybody can access the main page ("/") and the signup page ("/signup")
-                .antMatchers("/assets/**", "/", "/login", "/signup", "/public/**").permitAll().anyRequest().hasRole("USER")
+                .antMatchers("/assets/**", "/", "/login", "/signup", "/public/**","/project/listAll","/observation/listAll").permitAll().anyRequest().hasRole("USER")
 
         ;
         FormLoginConfigurer formLoginConfigurer = http.formLogin();

@@ -14,6 +14,7 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import org.springframework.web.multipart.MultipartResolver;
 
 import com.odvarkajak.oslol.bean.MailBean;
+import com.odvarkajak.oslol.service.FileAccessService;
 import com.odvarkajak.oslol.service.MyUserDetailsService;
 import com.odvarkajak.oslol.service.ObservationService;
 import com.odvarkajak.oslol.service.ProjectService;
@@ -46,6 +47,7 @@ public class CommonConfig {
     private String mailSmtpAuth;
     @Value("${mail.smtp.starttls.enable}")
     private String mailSmtpStartTlsEnable;
+
 
     @Bean
     JavaMailSender javaMailSender() {
@@ -91,6 +93,11 @@ public class CommonConfig {
     MyUserDetailsService myUserDetailsService() {
         return new MyUserDetailsService();
     }
+    
+    @Bean
+    FileAccessService fileAccessService() {
+        return new FileAccessService();
+    }    
     
     @Bean
     MailBean mailBean() {

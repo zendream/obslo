@@ -17,8 +17,8 @@ public class Project {
     private Date created;
     private Date modified;
     private String description;
-    private String picturefile;
-    private Blob picture;
+    private String pictureFile;
+    private String pictureDescription;
     private Set<ObservationToProject> observationProjects = new HashSet<ObservationToProject>(0);
     private Set<User> users = new HashSet<User>(0);
     
@@ -49,7 +49,7 @@ public class Project {
 	public void setAuthor(User author) {
 		this.author = author;
 	}
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created", unique = false, nullable = false)
 	public Date getCreated() {
 		return created;
@@ -57,7 +57,7 @@ public class Project {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modified", unique = false, nullable = false)
 	public Date getModified() {
 		return modified;
@@ -72,20 +72,19 @@ public class Project {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	@Column(name = "picturefile", unique = false, nullable = true)
+	@Column(name = "pictureFile", unique = false, nullable = true)
 	public String getPicturefile() {
-		return picturefile;
+		return pictureFile;
 	}
 	public void setPicturefile(String picturefile) {
-		this.picturefile = picturefile;
+		this.pictureFile = picturefile;
 	}
-	@Column(name = "picture", unique = false, nullable = true)
-	@Lob
-	public Blob getPicture() {
-		return picture;
+	@Column(name = "pictureDescription", unique = false, nullable = true)
+	public String getPicture() {
+		return pictureDescription;
 	}
-	public void setPicture(Blob picture) {
-		this.picture = picture;
+	public void setPicture(String picture) {
+		this.pictureDescription = picture;
 	}
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project")
 	public Set<ObservationToProject> getObservationProjects() {

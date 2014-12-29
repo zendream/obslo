@@ -29,7 +29,7 @@
 	        		Author
 	        	</th>
 	        	<th>
-           			Users involved
+           			Users
 	        	</th>
 	        	<th>
            			Created
@@ -53,7 +53,7 @@
             	        th:text="${project.name}">ProjectName</a>
             	</td>
             	<td th:text="${project.getAuthor().getUsername()}">Author</td>
-            	<td th:text="${project.getUsers().size()}">1</td>
+            	<td th:text="${project.getUsers().size() + 1}">1</td>
             	<td th:text="${project.created}">CreatedDate</td>
             	<td th:text="${project.modified}">ModifiedDate</td>
             	<td th:text="${project.description}">ProjectDescription</td>                        	
@@ -63,9 +63,11 @@
 
     	</table>
     	<div>
-    		<button class="btn btn-default btn-lg" type="submit">
-  				<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span> New
-			</button>
+    		<form th:action="@{/project/create}" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+    			<button class="btn btn-default btn-lg" type="submit">    		
+  					<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span> New Project
+				</button>
+			</form>
 		</div>
       </div>
     </div>    

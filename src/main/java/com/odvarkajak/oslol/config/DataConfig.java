@@ -46,6 +46,8 @@ public class DataConfig /*implements DisposableBean*/ {
     private String dialect;
     @Value("${hibernate.show_sql}")
     private String showSql;
+    @Value("${hibernate.stateDb}")
+    private String stateDb;
     @Value("${entitymanager.packages.to.scan}")
     private String packagesToScan;
     
@@ -101,7 +103,7 @@ public class DataConfig /*implements DisposableBean*/ {
         Properties ps = new Properties();
         
         ps.put("hibernate.dialect", dialect);
-        ps.put("hibernate.hbm2ddl.auto", "validate");
+        ps.put("hibernate.hbm2ddl.auto", stateDb);
         lcemfb.setJpaProperties(ps);
 
         lcemfb.afterPropertiesSet();

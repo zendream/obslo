@@ -63,9 +63,11 @@
 
      	</table>
     	<div>
-    		<button class="btn btn-default btn-lg" type="submit">
-  				<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span> New
-			</button>
+    		<form th:action="@{/observation/create}"  th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+    			<button class="btn btn-default btn-lg" type="submit">    		
+  					<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span> New Observation
+				</button>
+			</form>
 		</div>
       </div>
     </div>    
@@ -83,6 +85,14 @@
 <!-- DataTables -->
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script>
+$(window).bind("load",function() {
+  var x=document.getElementById("projects_paginate").childNodes;
+  var att = document.createAttribute("class");
+  att.value = "pagination";
+  x[0].setAttributeNode(att);
+  });
+</script>
 
 
 </body>

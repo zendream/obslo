@@ -21,7 +21,7 @@ public interface UserRepository {
     User findUserByUsername(String username);
     
     @Transactional(readOnly = true)
-    User findUserByEmail(String email);
+    User findUserByScreenname(String screen_name);
     
     List<String> findUsername(String query);
 

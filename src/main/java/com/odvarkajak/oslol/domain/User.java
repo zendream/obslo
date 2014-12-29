@@ -4,13 +4,7 @@ package com.odvarkajak.oslol.domain;
 
 import javax.persistence.*;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.odvarkajak.oslol.service.MyUserDetailsService;
-
 import java.sql.Blob;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +27,7 @@ public class User{
     private boolean enabled;
     
     private String picturefile;
-    private Blob picture;
+    private String picture;
     
     private Role role;
     private Set<Project> projects = new HashSet<Project>(0);
@@ -159,7 +153,7 @@ public class User{
         this.securityCode = securityCode;
     }
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", unique = false)
 	public Date getCreated() {
 		return created;
@@ -170,7 +164,7 @@ public class User{
 		this.created = created;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified", unique = false)
 	public Date getModified() {
 		return modified;
@@ -222,11 +216,10 @@ public class User{
 		this.picturefile = picturefile;
 	}
 	@Column(name = "picture", unique = false, nullable = true)
-	@Lob
-	public Blob getPicture() {
+	public String getPicture() {
 		return picture;
 	}
-	public void setPicture(Blob picture) {
+	public void setPicture(String picture) {
 		this.picture = picture;
 	}
 

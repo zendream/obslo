@@ -28,8 +28,9 @@ public class ProjectRepositoryImpl implements ProjectRepository{
     }
 
 	@Override
-	public void saveProject(Project project) {
+	public void saveProject(Project project) {		
 		em.merge(project);
+		em.flush();
 		
 	}
 

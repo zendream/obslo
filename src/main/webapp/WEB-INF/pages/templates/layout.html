@@ -39,7 +39,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">New Project</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a th:href="@{/project/create}">New Project</a></li>
                             <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" class="divider"></li>
                             <li class="dropdown-header">Search</li>
                             <li><a href="#">Find Projects</a></li>
@@ -53,7 +53,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Observations <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a href="#">New Observation</a></li>
+                            <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a th:href="@{/observation/create}">New Observation</a></li>
                             <li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" class="divider"></li>
                             <li class="dropdown-header">Search</li>
                             <li><a href="#">Find Observations</a></li>
@@ -88,13 +88,13 @@
         		</ul>
                 <ul class="nav navbar-nav navbar-right">
 					<li th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
-						<a th:href="@{/logout}">Logout&nbsp;</a>
+						<a th:href="@{/logout}">Logout&nbsp;&nbsp;</a>
 					</li>
                     <li th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}">
                         <a th:href="@{/login}">Login</a>
                     </li>
                     <li th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}">
-                        <a th:href="@{/public/signup}">Signup&nbsp;</a>
+                        <a th:href="@{/public/signup}">Signup&nbsp;&nbsp;</a>
                     </li>
 
 
