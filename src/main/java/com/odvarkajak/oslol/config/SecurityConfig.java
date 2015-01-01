@@ -49,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web
+        
                 .ignoring()
                 .antMatchers("/assets/**");
     }
@@ -58,13 +59,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @throws Exception
      */
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
+        		.csrf().disable()
+                .authorizeRequests()                
                 .antMatchers("/users**", "/sessions/**").hasRole("ADMIN") //
-                // everybody can access the main page ("/") and the signup page ("/signup")
-                .antMatchers("/assets/**", "/", "/login", "/signup", "/public/**","/project/listAll","/observation/listAll").permitAll().anyRequest().hasRole("USER")
+                // allow access to some parts to unauthorised users
+                .antMatchers("/assets/**", "/datatablesController**", "/", "/login", "/signup", "/public/**","/project/listAll","/observation/listAll").permitAll().anyRequest().hasRole("USER")
 
         ;
         FormLoginConfigurer formLoginConfigurer = http.formLogin();

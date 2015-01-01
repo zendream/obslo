@@ -1,5 +1,12 @@
 package com.odvarkajak.oslol.web.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -9,9 +16,14 @@ import javax.validation.Valid;
 
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -26,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.odvarkajak.oslol.domain.Project;
@@ -42,6 +55,11 @@ import com.odvarkajak.oslol.web.form.UserForm;
 public class ProjectController {
     static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    @Value("${fileDir.mainFolder}")
+    private String mainFolder;
+    @Value("${fileDir.projectImagesFolder}")
+    private String projectImagesFolder;
+    
     @Autowired
     ProjectRepository projectRepository;    
     
@@ -78,8 +96,27 @@ public class ProjectController {
     public String create(Model model) {
         logger.debug("Now: Create project");
         if (!model.containsAttribute("project")) {
-            model.addAttribute("project", new ProjectForm());
+        	ProjectForm newForm = new ProjectForm();
+            model.addAttribute("project", newForm);
         }        
+        return "view/project/create";
+    }
+    //TODO secure
+    @RequestMapping("/project/edit/{projectId}")
+    public String edit(Model model, @PathVariable("projectId") Long projectId) {
+        logger.debug("Now: Edit project");
+        Project project = projectRepository.findProjectById(projectId);
+        projectRepository.update(project);
+        ProjectForm form = new ProjectForm();
+        if (project != null){  
+        	form.setName(project.getName());
+        	form.setDescription(project.getDescription());
+        	form.setHasFile(project.getPicturefile() == "");
+        	form.setModifId(projectId);        
+        	logger.debug("Editing project Id - " + form.getModifId());
+        	form.setPhase(project.getPhase());
+        }
+        model.addAttribute("project", form);
         return "view/project/create";
     }
 
@@ -88,28 +125,129 @@ public class ProjectController {
     @Transactional
     public String createProject(Model model, @ModelAttribute("project") @Valid ProjectForm form, BindingResult result, ServletRequest servletRequest) {
         logger.debug("Now: createProject form");
-        User loggedUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        
-        if (!result.hasErrors()) {        	
+        User loggedUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();               
+        if (!result.hasErrors()) {  
+        	if (projectRepository.isNameAlreadyExists(form.getName())) {
+                FieldError fieldError = new FieldError("name", "name", "This name already exists");
+                result.addError(fieldError);
+                return "view/project/create";
+            }
             Calendar cal = Calendar.getInstance();
-            Date date = cal.getTime();
-            
+            Date date = cal.getTime();                       
             Project project = new Project();
+            logger.debug("kurvadrat");
             project.setName(form.getName());
             project.setDescription(form.getDescription());
-            project.setCreated(date);
+            project.setCreated(new java.sql.Date(date.getTime()));
+            project.setPhase(form.getPhase());
             project.setModified(date);
             project.setAuthor(userRepository.findUserByUsername(loggedUser.getUsername()));
-            projectRepository.saveProject(project);
+            if (form.getFile() == null){
+            	logger.debug("Project CreateOrEdit - Null file!");
+            }            
+            else{
+            	MultipartFile file = form.getFile();
+            	String filename = file.getOriginalFilename();
+            	logger.debug("Upload requested filename = " + file.getOriginalFilename());
+            	if (!file.isEmpty()) {
+                    try {
+                    	if (!file.getContentType().equals("image/jpeg")) {
+                			throw new RuntimeException("Only JPG images are accepted");
+                		}
+                    	String target = projectImagesFolder + "\\" + form.getName() + "\\";
+        				Path path = Paths.get(target + filename);
+        				File dir = path.toFile();
+        				dir.getParentFile().mkdirs();
+        				file.transferTo(path.toFile());
+        				logger.debug("FileIO - Saving file:  " + file.getOriginalFilename() + 
+        						" as " + filename + 
+        						" to " + target.toString());
+        				logger.debug("You successfully uploaded " + filename + "!");
+        				project.setPicture(file.getOriginalFilename());
+        				project.setPicturefile(file.getOriginalFilename());
+                    }
+                    catch (RuntimeException e) {
+                    	logger.debug("You failed to upload " + filename + " => " + e.getMessage());
+                    	FieldError fieldError = new FieldError("file", "file", "File too large or not .JPG");
+                        result.addError(fieldError);
+                        return "view/project/create";
+                    	
+                    }
+                    catch (Exception e) {
+                    	logger.debug("You failed to upload " + filename + " => " + e.getMessage());
+                    }
+                } else {
+                	logger.debug("You failed to upload " + filename + " because the file was empty.");                	
+                }
+            }
+            
+            projectRepository.saveProject(project);            
             logger.debug("End: createProject form success");
             logger.debug("End: createProject success");        
             return ("redirect:listAll/") ;
-        } else {
+        } 
+        else {
             logger.debug(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
             this.create(model);
             return "view/project/create";
 
         }
+    }
+    
+    @RequestMapping(value = "/project/getImage/{projectId}")
+    public @ResponseBody
+    HttpEntity<byte[]> getImage(@PathVariable Long projectId)  {
+    	Project project = projectRepository.findProjectById(projectId);
+    	HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG); //or what ever type it is
+        
+    	byte[] buffer = new byte[1024];
+    	int b;
+    	
+    	logger.debug("Retrieving picture for projectId = " + projectId);
+    	
+    	String target = projectImagesFolder + "\\" + project.getName() + "\\" + project.getPicturefile();
+		Path path;
+		File imageFile;
+		if ((projectId == null) || (project.getPicturefile() == null)){
+    		logger.debug("Image not set or ID not found, returning placeholder");
+    		target = mainFolder + "notfound.jpg";
+    		path = Paths.get(target);
+    		imageFile = path.toFile();
+    	}
+		else
+		{
+			path = Paths.get(target);
+			imageFile = path.toFile();
+		}
+		try {
+			
+			FileInputStream fis=new FileInputStream(imageFile);
+    		ByteArrayOutputStream bos=new ByteArrayOutputStream();
+    	
+    		while((b=fis.read(buffer))!=-1){
+    			bos.write(buffer,0,b);
+    		}
+		
+    		byte[] fileBytes=bos.toByteArray();
+    		fis.close();
+    		bos.close();
+            headers.setContentLength(fileBytes.length);
+            return new HttpEntity<byte[]>(fileBytes, headers);
+		}
+		catch (FileNotFoundException f) {
+			logger.debug("File not found");
+			f.printStackTrace();
+		}
+		catch(IOException e) {
+			logger.debug("IOException encountered while retrieving file");
+			e.printStackTrace();
+		}
+		catch (Exception e)	{
+			logger.debug("Something very bad happened when retrieving file");
+			e.printStackTrace();
+		}
+		return new HttpEntity<byte[]>(buffer, headers);
     }
     
 //TODO

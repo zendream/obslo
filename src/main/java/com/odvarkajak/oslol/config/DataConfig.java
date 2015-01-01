@@ -90,7 +90,7 @@ public class DataConfig /*implements DisposableBean*/ {
         lcemfb.setDataSource(this.hsqlInMemory());
         lcemfb.setPackagesToScan(new String[] {packagesToScan});
 
-        lcemfb.setPersistenceUnitName("MyPU");
+        lcemfb.setPersistenceUnitName("Hibernate Obslog");
 
         HibernateJpaVendorAdapter va = new HibernateJpaVendorAdapter();
         lcemfb.setJpaVendorAdapter(va);

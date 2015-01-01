@@ -45,7 +45,7 @@ public class AccessController {
 
     @RequestMapping(value = "/logout/success")
     public String logoutSuccess() {
-        return "/user/profile";
+        return "/";
     }
 
     @RequestMapping("/login/error")

@@ -13,10 +13,12 @@ public class FileAccessService {
     
     @Value("${fileDir.mainFolder}")
     private String mainFolder;
-    @Value("${fileDir.imagesFolder}")
-    private String imagesFolder;
+    @Value("${fileDir.userImagesFolder}")
+    private String userImagesFolder;
     @Value("${fileDir.dataFolder}")
     private String dataFolder;
+    @Value("${fileDir.projectImagesFolder}")
+    private String projectImagesFolder;
     
 	@Autowired 
 	ProjectRepository projectRepository;

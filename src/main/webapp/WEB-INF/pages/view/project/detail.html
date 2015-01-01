@@ -7,22 +7,32 @@
 </head>
 
 <body>
-//TODO
-
 <div th:include="templates/layout :: menuFragment">
 </div>
- <div class="container">
-    <div th:text="${project.getName()}">name</div>
-
-    <div>Current phase
+<div class="container-fluid">
+	<div class="page-header">
+    		<h2 contenteditable="true">Project Details</h2>
     </div>
-    <div>
-        <div th:text="${project.description}">phase</div>
-    </div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+    		<h3 class="panel-title" th:text="${project.name}">Project Name and Details</h3>
+	  	</div>
+  		<div class="panel-body">
+    			<div th:text="${project.name}">name</div>
 
+    			<div>Current phase
+	    		</div>
+    			<div>
+		        	<div th:text="${project.phase}">phase</div>
+		    	</div>
+		    	<div>
+		    		<img th:src="@{'/project/getImage/' + ${project.id}}" class="img-thumbnail"/>
+		    	</div>
 
+		</div>
+		
+	</div>
 </div>
-
 <div th:include="templates/layout :: footerFragment">
 
 </div>

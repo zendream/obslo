@@ -2,9 +2,10 @@ package com.odvarkajak.oslol.domain;
 
 import javax.persistence.*;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Set;
 import java.util.HashSet;
-import java.sql.Blob;
 import java.util.Date;
 
 @Entity(name = "project")
@@ -12,6 +13,7 @@ import java.util.Date;
 public class Project {
 
 	private Long id;
+	private int phase;
     private String name;
     private User author;
     private Date created;
@@ -31,7 +33,14 @@ public class Project {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	@Column(name = "name", unique = false, nullable = false)
+	@Column(name = "phase", unique = false, nullable = false)
+	public int getPhase() {
+		return phase;
+	}
+	public void setPhase(int phase) {
+		this.phase = phase;
+	}
+	@Column(name = "name", unique = true, nullable = false)
 	public String getName() {
 		return name;
 	}
@@ -50,6 +59,7 @@ public class Project {
 		this.author = author;
 	}
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat (pattern="dd-MMM-YYYY")
 	@Column(name = "created", unique = false, nullable = false)
 	public Date getCreated() {
 		return created;
@@ -58,6 +68,7 @@ public class Project {
 		this.created = created;
 	}
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat (pattern="dd-MMM-YYYY")
 	@Column(name = "modified", unique = false, nullable = false)
 	public Date getModified() {
 		return modified;
@@ -100,5 +111,6 @@ public class Project {
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
+
     
 }
