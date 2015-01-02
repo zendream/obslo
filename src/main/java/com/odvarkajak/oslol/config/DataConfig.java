@@ -104,6 +104,8 @@ public class DataConfig /*implements DisposableBean*/ {
         
         ps.put("hibernate.dialect", dialect);
         ps.put("hibernate.hbm2ddl.auto", stateDb);
+        ps.put("hibernate.enable_lazy_load_no_trans", true);
+        
         lcemfb.setJpaProperties(ps);
 
         lcemfb.afterPropertiesSet();

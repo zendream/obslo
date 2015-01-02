@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.odvarkajak.oslol.domain.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
@@ -79,7 +80,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public User findUserByScreenname(String screen_name) {
+    public User findUserByScreenname(String screen_name) throws NoResultException{
         return (User) em.createQuery("select u from user u where screen_name = :screen_name")
                 .setParameter("screen_name", screen_name).getSingleResult();
 

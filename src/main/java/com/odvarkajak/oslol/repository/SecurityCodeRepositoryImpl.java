@@ -15,7 +15,7 @@ public class SecurityCodeRepositoryImpl implements SecurityCodeRepository {
 
     @Override
     public void persist(SecurityCode securityCode) {
-        entityManager.persist(securityCode);
+        entityManager.merge(securityCode);
     }
 
     @Override

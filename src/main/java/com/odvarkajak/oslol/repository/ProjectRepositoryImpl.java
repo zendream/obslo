@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
@@ -32,7 +33,7 @@ public class ProjectRepositoryImpl implements ProjectRepository{
 	@Override
 	public void saveProject(Project project) {		
 		em.merge(project);
-		em.flush();
+		
 		
 	}
 
@@ -54,23 +55,30 @@ public class ProjectRepositoryImpl implements ProjectRepository{
 	}
 
 	@Override
-	public void update(Project project) {
-		em.merge(project);
-		em.flush();
+	public Project update(Project project) {
+		return em.merge(project);
+		
 		
 	}
 
 	@Override
 	public void delete(Project project) {
 		em.remove(project);
-		em.flush();
+		
 		
 	}
 	@Override
     @Transactional(readOnly = true)
     public Project findProjectByName(String name) {
-        return (Project) em.createQuery("select p from project p where name = :name")
+		Project ret = null;
+		try{
+			ret = (Project) em.createQuery("select p from project p where name = :name")
                 .setParameter("name", name).getSingleResult();
+			return ret;
+         }
+		catch(NoResultException e){
+			return null;
+		}
 
     }
 	@Override

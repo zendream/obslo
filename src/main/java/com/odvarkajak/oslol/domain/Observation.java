@@ -19,14 +19,14 @@ public class Observation {
     private Date created;
     private Date modified;
     private String description;
-    private String pictureName;
+    private String pictureFile;
     private String pictureDescription;
-    private String graphName;
+    private String graphFile;
     private String graphDescription;
     private Set<DataFile> files;
     
-    private Set<ObservationToProject> observationProjects = new HashSet<ObservationToProject>(0);
-    private Set<ObservationToUser> observationUsers = new HashSet<ObservationToUser>(0);
+    private Set<Project> projects = new HashSet<Project>();
+    private Set<User> users = new HashSet<User>();
     private ObservationTargetEnum target;
     
     @Id
@@ -88,26 +88,26 @@ public class Observation {
 	public void setTarget(ObservationTargetEnum target) {
 		this.target = target;
 	}
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.observation", cascade = {CascadeType.ALL})
-	public Set<ObservationToProject> getObservationProjects() {
-		return observationProjects;
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "observations")
+	public Set<Project> getProjects() {
+		return projects;
 	}
-	public void setObservationProjects(Set<ObservationToProject> observationProjects) {
-		this.observationProjects = observationProjects;
+	public void setProjects(Set<Project> projects) {
+		this.projects = projects;
 	}
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.observation", cascade = {CascadeType.ALL})
-	public Set<ObservationToUser> getObservationUsers() {
-		return observationUsers;
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "accessibleObservations")
+	public Set<User> getUsers() {
+		return users;
 	}
-	public void setObservationUsers(Set<ObservationToUser> observationUsers) {
-		this.observationUsers = observationUsers;
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 	@Column(name = "pictureFile", unique = false, nullable = true)
-	public String getPictureName() {
-		return pictureName;
+	public String getPictureFile() {
+		return pictureFile;
 	}
-	public void setPictureName(String pictureName) {
-		this.pictureName = pictureName;
+	public void setPictureFile(String pictureFile) {
+		this.pictureFile = pictureFile;
 	}
 	@Column(name = "pictureDescription", unique = false, nullable = true)
 	public String getPictureDescription() {
@@ -117,11 +117,11 @@ public class Observation {
 		this.pictureDescription = pictureDescription;
 	}
 	@Column(name = "graphFile", unique = false, nullable = true)
-	public String getGraphName() {
-		return graphName;
+	public String getGraphFile() {
+		return graphFile;
 	}
-	public void setGraphName(String graphName) {
-		this.graphName = graphName;
+	public void setGraphFile(String graphFile) {
+		this.graphFile = graphFile;
 	}
 	@Column(name = "graphDescription", unique = false, nullable = true)
 	public String getGraphDescription() {
@@ -130,7 +130,7 @@ public class Observation {
 	public void setGraphDescription(String graphDescription) {
 		this.graphDescription = graphDescription;
 	}
-	@OneToMany(mappedBy = "parentObservation")
+	@OneToMany(mappedBy = "parentObservation", fetch = FetchType.EAGER)
 	public Set<DataFile> getFiles() {
 		return files;
 	}

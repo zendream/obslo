@@ -1,10 +1,240 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:dt="http://github.com/dandelion/datatables"
+        >
+
+<head th:include="templates/layout :: headerFragment">
 </head>
+
 <body>
 
+<div th:include="templates/layout :: menuFragment">
+</div>
+<div class="container-fluid">
+	<div class="page-header">
+    		<h2 th:text="'Observation -' + ${observation.name}">Observation Details</h2>
+    </div>
+    <div class = "col-md-6 column ui-sortable">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+    		<h2 class="panel-title" th:text="${observation.name}">Observation Name and Details </h2>
+    		<h4 class="panel-title" th:if="${viewing == observation.author.email}">  This is your own observation. You can fully control it</h4>
+    		<h4 class="panel-title" th:if="${#lists.contains(directAccessUsers, '' + viewing)}">  You have access to this observation via project or itself</h4>		
+	  	</div>
+  		<div class="panel-body">
+    			<div th:text="${observation.name}">name</div>
+
+    			<div>Created on
+	    		</div>
+    			<div>
+		        	<div th:text="${observation.created}"></div>
+		    	</div>
+		    	<div>
+		    		<img th:src="@{'/observation/getImage/' + ${observation.id}}" class="img-thumbnail"/>
+		    		<img th:src="@{'/observation/getGraph/' + ${observation.id}}" class="img-thumbnail"/>
+		    	</div>
+
+		</div>
+		
+	</div>
+	</div>
+	<div class = "col-md-6 column ui-sortable">	
+	
+			<div class="panel panel-default">
+				<h4  th:if="${#lists.isEmpty(projects)}">This observation isn't assigned to any projects.</h4>     
+			</div>
+			<div class="panel panel-default" th:unless="${#lists.isEmpty(projects)}">
+				<div class="panel-heading">
+     				<h4 class="panel-title">  Belongs to projects </h4>
+     			</div>
+				<table dt:table="true" dt:theme="bootstrap2"
+					th:unless="${#lists.isEmpty(projects)}"
+    				dt:ext="bootstrap2-responsive"
+    				dt:paginationType="bootstrap"
+	        	   class="table table-striped table-condensed dataTable"
+		           id="projects">
+    		    	<thead>
+    	    			<tr>
+        					<th>
+        	   					Project Name
+			        		</th>
+			        	
+			        	</tr>
+   	    			</thead>
+        			<tbody>
+		        	<tr th:each="project : ${projects}">
+				
+		    	        <td> <a href="detail.html"
+    	    	    	        th:href="@{'/project/detail/' + ${project.id}}"
+        	    		        th:text="${project.name}">Project Name</a>
+        		    	</td>
+	        		</tr>
+	        		</tbody>
+
+     			</table>
+     		</div>
+     		
+     		<div class="panel panel-default">
+				<h3  th:if="${#lists.isEmpty(allowedUsers)}">This is an author only observation.</h3>     
+			</div>
+     		<div class="panel panel-default" th:unless="${#lists.isEmpty(allowedUsers)}">	
+     			<div class="panel-heading">
+     				<h4 class="panel-title"> Users Associated</h4>
+     			</div>
+	     		<table dt:table="true" dt:theme="bootstrap2"
+    				dt:ext="bootstrap2-responsive"
+    				dt:paginationType="bootstrap"
+	        	   class="table table-striped table-condensed dataTable"
+		           id="users">
+    		    	<thead>
+    	    			<tr>
+        					<th>
+        	   					Username
+			        		</th>
+		        	
+			        	</tr>
+   		    		</thead>
+        			<tbody>
+		    	    	<tr th:each="user : ${allowedUsers}">
+				
+	    	    	    	<td> <a href="detail.html"
+        	    		    	    th:href="@{'/user/detail/' + ${user.id}}"
+            		    	    	th:text="${user.username}">UserName</a>
+		        	    	</td>
+			        	</tr>
+	    	    	</tbody>
+	
+    	 		</table>
+     		</div>
+     		<div class="panel panel-default">
+				<h3  th:if="${#lists.isEmpty(observation.files)}">This observations contains no data files.</h3>     
+			</div>
+     		<div class="panel panel-default" th:unless="${#lists.isEmpty(observation.files)}">	
+     			<div class="panel-heading">
+     				<h4 class="panel-title"> Data Files</h4>
+     			</div>
+	     		<table dt:table="true" dt:theme="bootstrap2"
+    				dt:ext="bootstrap2-responsive"
+    				dt:paginationType="bootstrap"
+	        	   class="table table-striped table-condensed dataTable"
+		           id="dataFiles">
+    		    	<thead>
+    	    			<tr>
+        					<th>
+        	   					File
+			        		</th>
+			        		<th>
+        	   					Description
+			        		</th>
+			        		<th>
+        	   					Size
+			        		</th>
+		        	
+			        	</tr>
+   		    		</thead>
+        			<tbody>
+		    	    	<tr th:each="dataFile : ${observation.files}">
+				
+	    	    	    	<td> <a href="detail.html"
+        	    		    	    th:href="@{'/datafiles/get/' + ${observation.id} + '/' + ${dataFile.id}}"
+            		    	    	th:text="${dataFile.name}">datafile</a>
+		        	    	</td>
+		        	    	<td th:text="${file.description}">
+		        	    		Description
+		        	    	</td>
+		        	    	<td> <a href="detail.html" th:text="${file.size} / 1024 + ' kB'">size KB</a>
+		        	    	</td>
+			        	</tr>
+	    	    	</tbody>
+	
+    	 		</table>
+     		</div>     			
+			<div class="btn-group btn-group-lg btn-group-vertical pull-right" th:if="${viewing == observation.author.email}">
+	      		<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-align-left"></i> Give Access</button>
+    	  		<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-align-center"></i> Add New Observation</button>
+      			<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-align-right"></i> Add Existing Observation</button>
+      			<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-align-justify"></i> Delete Project</button>
+	    	</div>
+	    	<div class="panel panel-default" >
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Settings</h3>
+                    </div>
+                    <div class="panel-body">	
+    					<form role="form" th:action="@{'/observation/addSettings/'+${observation.id}}" th:object="${settingsForm}" method="post" class="form-horizontal" enctype="multipart/form-data">
+    					<fieldset>        
+            				<div style="margin-bottom: 25px" class="input-group has-feedback">
+    	        				<div th:class="${#fields.hasErrors('user')}? 'control-group error':'control-group'">
+	    	           				<label class="control-label" for="user">Add User to observation</label>
+									<div class="controls">
+										<input type="text" th:field="*{user}" id="user" class="form-control"/>
+										<span th:if="${#fields.hasErrors('user')}" th:errors="*{user}" class="help-inline">
+										Incorrect data
+										</span>
+	
+    	                     		</div>
+        	         			</div>
+							</div>
+	            			<div style="margin-bottom: 25px" class="input-group">
+    	        				<div th:class="${#fields.hasErrors('project')}? 'control-group error':'control-group'">
+	        	        			<label class="control-label" for="project">Assign to Project</label>
+									<div class="controls">
+    			            	    	<input type="text" th:field="*{project}" id="project" class="form-control"/>
+        			            		<span th:if="${#fields.hasErrors('project')}" th:errors="*{project}" class="help-inline">Incorrect data</span>
+	        			           	</div>
+								</div>
+							</div>
+            				<div style="margin-bottom: 25px" class="input-group">
+		            			<div th:class="${#fields.hasErrors('dataFile')}? 'control-group error':'control-group'">
+	    	    	        		<label class="control-label" for="dataFile">Add new File</label>
+									<div class="controls">
+	    	            		    	<input type="file" th:field="*{dataFile}" id="dataFile" class="form-control"/>
+    	    	            			<span th:if="${#fields.hasErrors('dataFile')}" th:errors="*{dataFile}" class="help-inline">Use only .txt files below 1 MB</span>
+		        	    	       	</div>
+								</div>
+							</div>
+							<div style="margin-bottom: 25px" class="input-group">
+		            			<div th:class="${#fields.hasErrors('description')}? 'control-group error':'control-group'">
+	    	    	        		<label class="control-label" for="description">File description</label>
+									<div class="controls">
+	    	            		    	<input type="dataFile" th:field="*{description}" id="description" class="form-control"/>
+    	    	            			<span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="help-inline">Use only .jpg files below 1 MB</span>
+		        	    	       	</div>
+								</div>
+							</div>	
+							<input class="btn btn-lg btn-success btn-block" type="submit" value="Add"/>
+       					</fieldset>
+    					</form>
+					</div>
+			
+			</div>
+	</div>
+</div>
+<div th:include="templates/layout :: footerFragment">
+
+</div>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"></link>
+
+  
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script>
+$(window).bind("load",function() {
+  var x=document.getElementById("projects_paginate").childNodes;
+  var att = document.createAttribute("class");
+  att.value = "pagination";
+  x[0].setAttributeNode(att);
+  var y=document.getElementById("users_paginate").childNodes;
+  var att2 = document.createAttribute("class");
+  att2.value = "pagination";
+  y[0].setAttributeNode(att2);
+  });
+</script>
 </body>
+
 </html>

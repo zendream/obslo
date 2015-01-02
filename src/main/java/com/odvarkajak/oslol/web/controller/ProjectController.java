@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
@@ -27,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -41,11 +43,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.odvarkajak.oslol.domain.Observation;
 import com.odvarkajak.oslol.domain.Project;
 import com.odvarkajak.oslol.domain.Role;
 import com.odvarkajak.oslol.domain.SecurityCode;
 import com.odvarkajak.oslol.repository.ProjectRepository;
 import com.odvarkajak.oslol.repository.UserRepository;
+import com.odvarkajak.oslol.service.ProjectService;
 import com.odvarkajak.oslol.utility.SecureUtility;
 import com.odvarkajak.oslol.utility.TypeActivationEnum;
 import com.odvarkajak.oslol.web.form.ProjectForm;
@@ -65,6 +69,9 @@ public class ProjectController {
     
     @Autowired
     UserRepository userRepository;
+    
+    @Autowired
+    ProjectService projectService;
     
     @SuppressWarnings("unchecked")
 	@ModelAttribute("allProjects")
@@ -88,6 +95,22 @@ public class ProjectController {
     	ModelAndView mav = new ModelAndView("view/project/detail");
     	Project project = projectRepository.findProjectById(projectId);
         mav.addObject("project", project);
+        User loggedUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	String viewing = loggedUser.getUsername();
+        mav.addObject("viewing",viewing);
+        List<String> directAccessUsers = new LinkedList<String>();
+        logger.debug("Building list of allowed users");
+        directAccessUsers.addAll(projectService.getUserNamesWithAccess(project));
+        mav.addObject("directAccessUsers",directAccessUsers);
+        List<Observation> observations = new LinkedList<Observation>();
+        logger.debug("Building list of observations");
+        for (Observation observation : project.getObservations()){
+        	observations.add(observation);
+        }
+        for(Observation observation : observations){
+        	logger.debug("Found observation - " + observation.getName());
+        }
+        mav.addObject("observations",observations);
         return mav;
     }
 
@@ -111,7 +134,7 @@ public class ProjectController {
         if (project != null){  
         	form.setName(project.getName());
         	form.setDescription(project.getDescription());
-        	form.setHasFile(project.getPicturefile() == "");
+        	form.setHasFile(project.getPictureFile() == "");
         	form.setModifId(projectId);        
         	logger.debug("Editing project Id - " + form.getModifId());
         	form.setPhase(project.getPhase());
@@ -164,7 +187,7 @@ public class ProjectController {
         						" to " + target.toString());
         				logger.debug("You successfully uploaded " + filename + "!");
         				project.setPicture(file.getOriginalFilename());
-        				project.setPicturefile(file.getOriginalFilename());
+        				project.setPictureFile(file.getOriginalFilename());
                     }
                     catch (RuntimeException e) {
                     	logger.debug("You failed to upload " + filename + " => " + e.getMessage());
@@ -206,10 +229,10 @@ public class ProjectController {
     	
     	logger.debug("Retrieving picture for projectId = " + projectId);
     	
-    	String target = projectImagesFolder + "\\" + project.getName() + "\\" + project.getPicturefile();
+    	String target = projectImagesFolder + "\\" + project.getName() + "\\" + project.getPictureFile();
 		Path path;
 		File imageFile;
-		if ((projectId == null) || (project.getPicturefile() == null)){
+		if ((projectId == null) || (project.getPictureFile() == null)){
     		logger.debug("Image not set or ID not found, returning placeholder");
     		target = mainFolder + "notfound.jpg";
     		path = Paths.get(target);

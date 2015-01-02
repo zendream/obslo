@@ -21,7 +21,7 @@
         	   class="table table-striped table-condensed dataTable"
 	           id="observations">
     	    <thead th:unless="${#lists.isEmpty(allObservations)}">
-    	    <tr>
+    	    	<tr>
         		<th>
            			Name
 	        	</th>
@@ -57,7 +57,7 @@
             	<td th:text="${observation.modified}">ModifiedDate</td>
             	<td th:text="${observation.target}">Target</td>
             	<td th:text="${observation.description}">ObservationDescription</td>                        	
-            	<td th:text="${observation.getObservationProjects().size()}">1</td>
+            	<td th:text="${observation.getProjects().size()}">1</td>
         	</tr>
 	        </tbody>
 
@@ -87,7 +87,7 @@
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script>
 $(window).bind("load",function() {
-  var x=document.getElementById("projects_paginate").childNodes;
+  var x=document.getElementById("observations_paginate").childNodes;
   var att = document.createAttribute("class");
   att.value = "pagination";
   x[0].setAttributeNode(att);

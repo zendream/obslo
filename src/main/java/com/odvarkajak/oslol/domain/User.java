@@ -30,9 +30,9 @@ public class User{
     private String picture;
     
     private Role role;
-    private Set<Project> projects = new HashSet<Project>(0);
+    private Set<Project> projects = new HashSet<Project>();
     private Set<Observation> observations;
-    private Set<ObservationToUser> observationUsers = new HashSet<ObservationToUser>(0);
+    private Set<Observation> accessibleObservations = new HashSet<Observation>();
     
     public User(){
     	
@@ -41,7 +41,7 @@ public class User{
     		String email,SecurityCode securityCode, 
     		boolean accountExpired, boolean accountLocked, boolean enabled,
     		Role role,
-    		Set<Project> projects,Set<Observation> observations,Set<ObservationToUser> observationUsers){
+    		Set<Project> projects,Set<Observation> observations,Set<Observation> accessibleObservations){
     	
     	this.id = id;
     	this.username = username;
@@ -56,7 +56,7 @@ public class User{
     	this.role = role;
     	this.projects = projects;
     	this.observations = observations;
-    	this.observationUsers = observationUsers;    	
+    	this.accessibleObservations = accessibleObservations;    	
     	
     }
     @Column(name = "screen_name", unique = true)
@@ -175,11 +175,11 @@ public class User{
 		this.modified = modified;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "user_project", joinColumns = { 
-			@JoinColumn(name = "user", nullable = false, updatable = false) }, 
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@JoinTable(name = "project_user", joinColumns = { 
+			@JoinColumn(name = "user", nullable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "project", 
-					nullable = false, updatable = false) })
+					nullable = false) })
 	public Set<Project> getProjects() {
 		return projects;
 	}
@@ -198,14 +198,18 @@ public class User{
 		this.observations = observations;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user")
-	public Set<ObservationToUser> getObservationUsers() {
-		return observationUsers;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@JoinTable(name = "observation_user", joinColumns = { 
+			@JoinColumn(name = "user", nullable = false, updatable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "observation", 
+					nullable = false, updatable = false) })
+	public Set<Observation> getAccessibleObservations() {
+		return accessibleObservations;
 	}
 
 
-	public void setObservationUsers(Set<ObservationToUser> observationUsers) {
-		this.observationUsers = observationUsers;
+	public void setAccessibleObservations(Set<Observation> accessibleObservations) {
+		this.accessibleObservations = accessibleObservations;
 	}
 	
 	@Column(name = "picturefile", unique = false, nullable = true)

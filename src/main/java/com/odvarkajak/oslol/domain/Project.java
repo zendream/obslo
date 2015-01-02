@@ -21,8 +21,8 @@ public class Project {
     private String description;
     private String pictureFile;
     private String pictureDescription;
-    private Set<ObservationToProject> observationProjects = new HashSet<ObservationToProject>(0);
-    private Set<User> users = new HashSet<User>(0);
+    private Set<Observation> observations = new HashSet<Observation>();
+    private Set<User> users = new HashSet<User>();
     
     @Id
     @Column(name = "projectId")
@@ -84,10 +84,10 @@ public class Project {
 		this.description = description;
 	}
 	@Column(name = "pictureFile", unique = false, nullable = true)
-	public String getPicturefile() {
+	public String getPictureFile() {
 		return pictureFile;
 	}
-	public void setPicturefile(String picturefile) {
+	public void setPictureFile(String picturefile) {
 		this.pictureFile = picturefile;
 	}
 	@Column(name = "pictureDescription", unique = false, nullable = true)
@@ -97,14 +97,18 @@ public class Project {
 	public void setPicture(String picture) {
 		this.pictureDescription = picture;
 	}
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project")
-	public Set<ObservationToProject> getObservationProjects() {
-		return observationProjects;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@JoinTable(name = "project_observation", joinColumns = { 
+			@JoinColumn(name = "project", nullable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "observation", 
+					nullable = false) })
+	public Set<Observation> getObservations() {
+		return observations;
 	}
-	public void setObservationProjects(Set<ObservationToProject> observationProjects) {
-		this.observationProjects = observationProjects;
+	public void setObservations(Set<Observation> observations) {
+		this.observations = observations;
 	}
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "projects")
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "projects")
 	public Set<User> getUsers() {
 		return users;
 	}

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.NoResultException;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +28,7 @@ public interface ProjectRepository {
     @Transactional(readOnly = true)
     List<Project> findProjectsByname(String query);
        
-    @Transactional(readOnly = false)
-    void update(Project project);
+    Project update(Project project);
     
     @Transactional(readOnly = false)
     void delete(Project project);

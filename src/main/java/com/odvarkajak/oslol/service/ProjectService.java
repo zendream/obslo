@@ -39,13 +39,12 @@ public class ProjectService {
     public Project findById(final Long id) {
         return this.projectRepository.findProjectById(id);
     }
-    public List<Long> getUserIdsWithAccess(Project project){
-    	List<Long> ret = new LinkedList<Long>();
-    	ret.add(project.getAuthor().getId());
+    public List<String> getUserNamesWithAccess(Project project){
+    	List<String> ret = new LinkedList<String>();
+    	ret.add(project.getAuthor().getEmail());
     	for(User user : project.getUsers()){
-    		ret.add(user.getId());
+    		ret.add(user.getEmail());
     	}    	
 		return ret;
-    }
-    	
+    }    	
 }
