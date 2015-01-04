@@ -44,6 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.odvarkajak.oslol.domain.DataFile;
 import com.odvarkajak.oslol.domain.Observation;
 import com.odvarkajak.oslol.domain.Project;
+import com.odvarkajak.oslol.repository.DataFileRepository;
 import com.odvarkajak.oslol.repository.ObservationRepository;
 import com.odvarkajak.oslol.repository.ProjectRepository;
 import com.odvarkajak.oslol.repository.UserRepository;
@@ -68,6 +69,9 @@ public class ObservationController {
     
     @Autowired
     ProjectRepository projectRepository;
+    
+    @Autowired
+    DataFileRepository dataFileRepository;
     
 	@Autowired
 	ObservationRepository observationRepository;
@@ -192,9 +196,25 @@ public class ObservationController {
                     	//if (!file.getContentType().equals("text/txt")) {
                 		//	throw new RuntimeException("Only TXT files are accepted");
                 		//}
-        	            
-                    	String target = observationDataFolder + "\\" + observation.getId() + "\\";
+                    	Calendar cal = Calendar.getInstance();
+        	            Date date = cal.getTime();
+        	            String target = observationDataFolder + "\\" + observation.getId() + "\\";
         				Path path = Paths.get(target + filename);
+        				
+        	            dataFile.setCreated(new java.sql.Date(date.getTime()));
+        	            
+        	            if(form.getDescription() == null) 
+        	            		dataFile.setDescription("N/A");
+        	            	else 
+        	            		dataFile.setDescription(form.getDescription());
+        	            
+        	            dataFile.setName(file.getOriginalFilename());
+        	            dataFile.setParentObservation(observation);
+        	            dataFile.setPath(path.toString());
+        	            dataFile.setSize(file.getSize());
+        	            dataFile.setParentObservation(observation);
+        	            dataFileRepository.saveDataFile(dataFile);        	            
+                    	
         				File dir = path.toFile();
         				dir.getParentFile().mkdirs();
         				file.transferTo(path.toFile());
@@ -202,16 +222,7 @@ public class ObservationController {
         						" of observation " + observation.getId() + 
         						" to " + target.toString());
         				logger.debug("You successfully uploaded " + filename + "!");
-        				Calendar cal = Calendar.getInstance();
-        	            Date date = cal.getTime();
-        	            dataFile.setCreated(new java.sql.Date(date.getTime()));
-        	            dataFile.setDescription(form.getDescription());
-        	            dataFile.setName(file.getOriginalFilename());
-        	            dataFile.setParentObservation(observation);
-        	            dataFile.setPath(path.toString());
-        	            dataFile.setSize(file.getSize());
-        	            observation.getFiles().add(dataFile);
-        	            observationRepository.saveObservation(observation);
+        				
                     }
                     catch (RuntimeException e) {
                     	logger.debug("You failed to upload " + filename + " => " + e.getMessage());
@@ -263,7 +274,6 @@ public class ObservationController {
 	            Calendar cal = Calendar.getInstance();
 	            Date date = cal.getTime();                       
 	            Observation observation = new Observation();
-	            logger.debug("kurvadrat");
 	            observation.setId(null);
 	            observation.setName(form.getName());
 	            observation.setDescription(form.getDescription());

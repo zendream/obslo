@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()                
                 .antMatchers("/users**", "/sessions/**").hasRole("ADMIN") //
                 // allow access to some parts to unauthorised users
-                .antMatchers("/assets/**", "/datatablesController**", "/", "/login", "/signup", "/public/**","/project/listAll","/observation/listAll").permitAll().anyRequest().hasRole("USER")
+                .antMatchers("/assets/**", "/datatablesController/**", "/", "/login", "/signup", "/public/**","/project/listAll","/observation/listAll").permitAll().anyRequest().hasRole("USER")
 
         ;
         FormLoginConfigurer formLoginConfigurer = http.formLogin();

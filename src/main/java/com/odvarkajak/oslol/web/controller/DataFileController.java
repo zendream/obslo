@@ -10,37 +10,36 @@ import java.nio.file.Paths;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.odvarkajak.oslol.domain.DataFile;
+import com.odvarkajak.oslol.repository.DataFileRepository;
+
 @Controller
 public class DataFileController {
 	
 	static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	
+	@Value("${fileDir.observationDataFolder}")
+    private String observationDataFolder;
+	
+	@Autowired
+	DataFileRepository dataFileRepository;
 	
 	private void validateImage(MultipartFile image) {
 		if (!image.getContentType().equals("image/jpeg")) {
 			throw new RuntimeException("Only JPG images are accepted");
 		}
 	}
-	private void saveImage(String filename, String path, MultipartFile image)
-			throws RuntimeException, IOException {
-			try {			
-				path = "C:\\TEMP\\images\\users\\";
-				Path target = Paths.get(path + filename);
-				image.transferTo(target.toFile()); 
-				System.out.println("FileIO - Saving file:  " + image.getOriginalFilename() + 
-						" as " + filename + 
-						" to " + target.toString());
-				} 
-			catch (IOException e) {
-					throw e;
-				}
-		}
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
     public @ResponseBody String handleFileUpload(@RequestParam("filename") String filename,
             @RequestParam("file") MultipartFile file){		
@@ -61,4 +60,12 @@ public class DataFileController {
         }
         
     }
+	@RequestMapping(value = "/datafiles/get/{observationId}/{dataFileId}", method = RequestMethod.GET)
+	@ResponseBody
+	public FileSystemResource getFile(@PathVariable("observationId") Long observationId,@PathVariable("dataFileId") Long dataFileId) {
+			DataFile dataFile = dataFileRepository.findDataFileById(dataFileId);	    	
+			Path path = Paths.get(dataFile.getPath());
+			File file = path.toFile();			
+		return new FileSystemResource(file); 
+	}
 }

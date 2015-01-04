@@ -144,7 +144,7 @@ public class User{
         this.enabled = enabled;
     }
     
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     public SecurityCode getSecurityCode() {
         return securityCode;
     }
